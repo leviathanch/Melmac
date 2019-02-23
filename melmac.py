@@ -4,6 +4,7 @@
 import sys
 import re
 
+
 from antlr4 import *
 from melmac_alf import MelmacALFData
 from ALF.ALFLexer import ALFLexer
@@ -26,3 +27,4 @@ class Melmac(object):
 if len(sys.argv)>1:
 	main = Melmac(sys.argv[1])
 	print(main.start())
+
