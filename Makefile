@@ -4,15 +4,17 @@ ANTLR4_PATH:=$(PWD)/alf_parser/thirdparty/antlr4/tool
 ANTLR4_CMD:=java -jar $(ANTLR4_JAR)
 MAVEN_PATH:=/usr/bin/mvn
 
-all: parser
-	./melmac.py alf_parser/examples/samplelibrary.alf
+all: test
+
+test: parser
+	./test.py alf_parser/examples/samplelibrary.alf
+	gprof2dot -f pstats log.profile -o log.dot
+	dot -Tpng log.dot -o log.png
 
 parser: $(ANTLR4_JAR)
 	mkdir -p ALF
 	cp alf_parser/grammar/ALF.g4 ALF/
-	#antlr4 -long-messages -Dlanguage=Python3 ALF/ALF.g4
-	#$(ANTLR4_CMD) -long-messages -Dlanguage=Python3 ALF/ALF.g4
-	$(ANTLR4_CMD) -Dlanguage=Python3 ALF/ALF.g4
+	$(ANTLR4_CMD) -listener -Dlanguage=Python3 ALF/ALF.g4
 
 $(ANTLR4_JAR): $(MAVEN_PATH)
 	cd $(ANTLR4_PATH) && $(MAVEN_PATH) package
