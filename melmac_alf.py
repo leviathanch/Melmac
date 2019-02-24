@@ -2,26 +2,32 @@
 # -*- coding: utf-8 -*-
 
 import sys
+
 from antlr4 import *
 
+from ALF.ALFListener import ALFListener
+from ALF.ALFLexer import ALFLexer
+from ALF.ALFParser import ALFParser
+
+class ALFPrintListener(ALFListener):
+	def enterCell(self, ctx):
+		print("CELL: "+ctx.identifier().getText())
+		#print(ctx.getText())
+		#print("CELL: %s" % ctx.alf_id())
+	
+	def enterIdentifier(self, ctx):
+		print("identifier: "+ctx.getText())
+
 class MelmacALFData(object):
-	unit_names = ['TIME','FREQUENCY','DISTANCE','AREA','VOLTAGE','CURRENT','ENERGY','POWER','CAPACITANCE','RESISTANCE','INDUCTANCE']
-	parsing_unit = False
-	unit_names = ['TIME','FREQUENCY','DISTANCE','AREA','VOLTAGE','CURRENT','ENERGY','POWER','CAPACITANCE','RESISTANCE','INDUCTANCE']
-	recent_unit_name = None
+	def __init__(self, filename):
+		print("Opening file: "+filename)
+		lexer = ALFLexer(FileStream(filename))
+		stream = CommonTokenStream(lexer)
+		stream.fill()
+		parser = ALFParser(stream)
+		parser._interp.predictionMode = PredictionMode.LL_EXACT_AMBIG_DETECTION
+		tree = parser.start()
+		printer = ALFPrintListener()
+		walker = ParseTreeWalker()
+		walker.walk(printer, tree)
 
-	def __init__(self, expr):
-		self.handleExpression(expr)
-
-	def handleExpression(self, expr):
-		for child in expr.getChildren():
-			if isinstance(child, tree.Tree.TerminalNode):
-				token=child.getText()
-				print(token)
-
-				if token in self.unit_names:
-					self.recent_unit_name=token
-
-				#print("Parsed expression %s" % (expr.getText()))
-			else:
-				self.handleExpression(child)
