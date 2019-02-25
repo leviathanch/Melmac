@@ -7,7 +7,7 @@ MAVEN_PATH:=/usr/bin/mvn
 all: test
 
 test: parser
-	time ./test.py alf_parser/examples/samplelibrary.alf
+	./test.py
 	gprof2dot -f pstats log.profile -o log.dot
 	dot -Tpng log.dot -o log.png
 
