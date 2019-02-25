@@ -24,9 +24,9 @@ class MelmacALFData(object):
 		lexer = ALFLexer(FileStream(filename))
 		stream = CommonTokenStream(lexer)
 		stream.fill()
-		parser = ALFParser(stream)
-		parser._interp.predictionMode = PredictionMode.LL_EXACT_AMBIG_DETECTION
-		tree = parser.start()
+		self.parser = ALFParser(stream)
+		self.parser._interp.predictionMode = PredictionMode.LL_EXACT_AMBIG_DETECTION
+		tree = self.parser.start()
 		printer = ALFPrintListener()
 		walker = ParseTreeWalker()
 		walker.walk(printer, tree)
